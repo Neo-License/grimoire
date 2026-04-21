@@ -1,7 +1,20 @@
 {
   "permissions": {
     "allow": [
-      "Bash(ls:*)"
+      "Bash(ls:*)",
+      "mcp__codebase-memory-mcp__list_projects",
+      "WebSearch",
+      "Bash(find /Users/fred/Code/grimoire/skills/grimoire-bug* -type f -name \"*.md\")",
+      "Bash(npx eslint src/ --ext .ts 2>&1 | head -50)",
+      "Bash(npx jscpd src/ --reporters console 2>&1)",
+      "Bash(npx eslint --no-eslintrc --rule 'complexity: [warn, 10]' --ext .ts src/ 2>&1 | head -60)",
+      "Bash(npx vitest run --reporter verbose 2>&1)",
+      "Bash(npx vitest run --reporter verbose --coverage 2>&1)",
+      "mcp__codebase-memory-mcp__index_repository",
+      "mcp__codebase-memory-mcp__get_architecture",
+      "Bash(npx tsc *)",
+      "Bash(npx eslint *)",
+      "Bash(npx vitest *)"
     ]
   }
 }
