@@ -38,7 +38,7 @@ Derive implementation tasks from approved Gherkin features and MADR decisions. T
 - "See if there's an existing utility for Z"
 - "TODO: check if this conflicts with…"
 
-Resolve each one yourself before writing the task. Tools: codebase-memory-mcp (`search_graph`, `trace_path`, `get_code_snippet`), `.grimoire/docs/conventions/<area>.md` for placement/naming, `Grep`, neighbor files. The task should state the *answer* ("Reuse `parse_invoice` in `src/billing/parsing.py:42`" or "No existing utility — write new"), never the *question*.
+Resolve each one yourself before writing the task. Tools: codebase-memory-mcp (`search_graph`, `trace_path`, `get_code_snippet`), `.grimoire/docs/<area>.md` reusable-code tables, `Grep`, neighbor files. The task should state the *answer* ("Reuse `parse_invoice` in `src/billing/parsing.py:42`" or "No existing utility — write new"), never the *question*.
 
 **2. Clarify or propose, never assume.** When the spec is ambiguous or silent on something you need to plan:
 
@@ -70,16 +70,22 @@ The plan implements what's approved. It does not expand scope to hit a checklist
 - If the decision was **hybrid** (adopt for part, build for part), ensure the boundary between adopted and custom code is clear in the tasks.
 
 **Read from grimoire docs (these replace codebase exploration):**
-- **`.grimoire/docs/conventions/<area>.md`** for each area the change touches — these contain: file placement rules, naming conventions, and pattern guidance. Read these for placement/naming decisions.
+- **`.grimoire/docs/<area>.md`** for each area the change touches — these contain: key files with responsibilities, reusable utilities (exact function names, file paths, line numbers), naming conventions, structural patterns, and "Where New Code Goes" guidance. This is the information that lets you write tasks with exact file paths without reading every source file.
 - **`.grimoire/docs/data/schema.yml`** — the full data model: every table/collection, field types, relationships, indexes, and external API contracts with `source:` pointers to ORM code. Read this instead of reading individual model files.
 - **`.grimoire/docs/context.yml`** — the project's deployment environment, related services, infrastructure dependencies, CI/CD pipelines, and observability setup. Read this to understand deployment constraints (e.g., Lambda means no long-running processes, Kubernetes means you may need health check endpoints), cross-service boundaries (e.g., auth is handled by a sibling service, not this project), and infrastructure available at runtime (e.g., Redis is available for caching, RabbitMQ for async tasks).
+- **`.grimoire/docs/.snapshot.json`** `duplicates` section if present — existing clones in areas you're touching, so tasks consolidate rather than add more.
 
 **Read proposed data changes:**
 - **`data.yml`** if present — proposed schema changes need migration and model tasks
 
+**Staleness gate:** For each area doc loaded, check its `last_updated` date against `git log -1 --format=%ci <directory>`. If any doc is older than the most recent commit to its directory, it's stale — the file paths, utility names, and patterns it describes may no longer be accurate.
+
+- **Level 1-2:** Warn ("Area doc for `<area>` is behind recent commits — reusable utilities and file paths may be wrong") and proceed. Note inferred paths with `<!-- inferred: area doc may be stale -->`.
+- **Level 3-4:** Treat as a blocker. Do not generate tasks until the user refreshes stale docs via `grimoire-discover` targeted refresh. Planning with stale docs at this complexity produces wrong file paths and misses recent utilities — the cost of re-planning outweighs the cost of refreshing first.
+
 **Read specific source files only when:**
-- Conventions files don't exist yet → tell the user to run `/grimoire:discover` first
-- Conventions files exist but you need to verify a specific implementation detail (e.g., exact function signature) → use `get_code_snippet` from codebase-memory-mcp first; fall back to Read only if MCP unavailable
+- Area docs don't exist yet (tell the user to run `grimoire map` + `/grimoire:discover` first — planning without area docs produces worse tasks)
+- Area docs exist but you need to verify a specific implementation detail (e.g., exact function signature, exact import path)
 - You need to read existing step definitions to understand the test setup
 
 **Do NOT read the entire codebase** for "context." The plan skill's job is to produce tasks with specific file paths and specific assertions. Area docs + data schema give you this. Reading dozens of source files wastes context window and doesn't produce better plans.
@@ -253,9 +259,8 @@ Follow the rules in `../references/testing-contracts.md`. Key points: mock at HT
 - If a library was rejected for a specific reason (e.g., doesn't support X), add a comment to the relevant task noting this so future developers don't re-evaluate the same option
 
 **Existing code to reuse:**
-- Use `search_graph(name_pattern=...)` from codebase-memory-mcp to find existing utilities before writing new ones
-- Use `get_code_snippet(qualified_name=...)` to read the implementation of a candidate utility before deciding to reuse or write new
-- Conventions files document placement/naming — use them for "where does this code go?" not "what utilities exist?"
+- If `.grimoire/docs/` has area docs, check the Reusable Code tables for utilities that apply to this change
+- If the snapshot has duplicate data, check whether the area you're touching already has clones — tasks should consolidate rather than add more
 - Add a "Reuse" section at the top of tasks.md listing specific functions/classes to import instead of rewriting
 
 **Verification (always last):**
@@ -278,7 +283,7 @@ The tasks file starts with a context block so any LLM can orient without re-read
 ## 1. <Capability/Area>
 <!-- context:
   - .grimoire/changes/<change-id>/features/<capability>/<name>.feature
-  - .grimoire/docs/conventions/<area>.md
+  - .grimoire/docs/<area>.md
   - src/<area>/<file-to-edit>.ts
   - tests/<area>/<test-file>.ts
 -->

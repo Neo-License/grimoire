@@ -34,7 +34,7 @@ Each debt item in the register follows a structured format influenced by the Cod
 
 **Required fields:**
 - `id` — unique identifier (debt-NNN, monotonically increasing)
-- `category` — one of: `hotspot`, `structural_bloat`, `data_structure`, `circular_dependency`, `dependency_staleness`, `broken_promise`, `duplication`, `dead_code`, `test_debt`
+- `category` — one of: `hotspot`, `structural_bloat`, `data_structure`, `circular_dependency`, `dependency_staleness`, `broken_promise`, `duplication`, `dead_code`, `test_debt`, `pattern_divergence`
 - `severity` — `high`, `medium`, or `low`
 - `location` — file path (with optional `:line`), or `path ↔ path` for relationships
 - `title` — short human-readable summary
@@ -116,6 +116,7 @@ Run applicable scans from the categories in `../references/refactor-scan-categor
 - **Duplication** — uses `.snapshot.json` duplicates or `config.tools.duplicates`
 - **Dead code** — uses `config.tools.dead_code` or `codebase-memory-mcp` graph queries
 - **Test debt** — high complexity + low coverage
+- **Pattern divergence** — code that contradicts established codebase patterns; uses `codebase-memory-mcp` peer group analysis + hallucinated reference detection (skip if graph not indexed)
 
 ### 3. Load Exceptions
 
@@ -233,11 +234,9 @@ The debt register is a living document. Recommend:
 
 ## Integration with Other Skills
 
-- **grimoire-health** — the health score reflects some debt dimensions (coverage, complexity, duplicates). Refactoring should improve health scores.
 - **grimoire-audit** — audit finds undocumented features/decisions. Refactor finds code quality issues. They're complementary — run audit first to understand what the code does, then refactor to improve how it does it.
 - **grimoire-discover** — area docs provide context for refactoring. After refactoring, run discover to update docs.
 - **grimoire-review** — the senior engineer persona already checks for simplicity and reuse. Refactor findings can inform review criteria.
-- **grimoire-check** — the commit-time checks prevent new debt. Refactor addresses existing debt.
 
 ## Important
 - **Don't boil the ocean.** Tech debt reduction is incremental. Pick the highest-impact items and make measurable progress. A codebase with zero debt is not the goal — a codebase where debt doesn't slow you down is.

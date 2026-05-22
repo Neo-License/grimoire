@@ -14,7 +14,9 @@
       "mcp__codebase-memory-mcp__get_architecture",
       "Bash(npx tsc *)",
       "Bash(npx eslint *)",
-      "Bash(npx vitest *)"
+      "Bash(npx vitest *)",
+      "mcp__codebase-memory-mcp__get_code_snippet",
+      "mcp__codebase-memory-mcp__search_code"
     ]
   }
 }
