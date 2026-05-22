@@ -16,7 +16,8 @@
       "Bash(npx eslint *)",
       "Bash(npx vitest *)",
       "mcp__codebase-memory-mcp__get_code_snippet",
-      "mcp__codebase-memory-mcp__search_code"
+      "mcp__codebase-memory-mcp__search_code",
+      "mcp__codebase-memory-mcp__search_graph"
     ]
   }
 }
