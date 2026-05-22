@@ -76,7 +76,7 @@ Cross-check filenames in the diff against `tasks.md` references — surface mism
 - `.grimoire/config.yaml` — language, tools, `commit_style`, `comment_style`, `project.compliance`, `dep_audit`, `precommit_review` (if set)
 - `.grimoire/docs/context.yml` — deployment env, related services
 - `.grimoire/docs/data/schema.yml` — current data baseline
-- Relevant `.grimoire/docs/<area>.md` for directories touched by the diff
+- Relevant `.grimoire/docs/conventions/<area>.md` for directories touched by the diff (placement/naming conventions)
 - Repo root: `AGENTS.md`, `CLAUDE.md`, `.editorconfig`, lint/format config files (for the code-style persona)
 
 ### 4. Build Project Briefing
