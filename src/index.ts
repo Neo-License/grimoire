@@ -5,7 +5,6 @@ export { validateChange, type ValidateResult } from "./core/validate.js";
 export { listChanges, listFeatures, listDecisions } from "./core/list.js";
 export { getChangeStatus } from "./core/status.js";
 export { archiveChange, ArchiveError } from "./core/archive.js";
-export { generateMap } from "./core/map.js";
 export { runCheck, type CheckResult } from "./core/check.js";
 export { loadConfig } from "./utils/config.js";
 export { detectTools } from "./core/detect.js";

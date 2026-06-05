@@ -23,9 +23,6 @@ export const TEMPLATE_FILES: Array<[string, string]> = [
   ["context.yml", ".grimoire/docs/context.yml"],
   ["debt-exceptions.yml", ".grimoire/debt-exceptions.yml"],
   ["accepted-risks.yml", ".grimoire/security/accepted-risks.yml"],
-  ["mapignore", ".grimoire/mapignore"],
-  ["mapkeys", ".grimoire/mapkeys"],
-  ["dupignore", ".grimoire/dupignore"],
 ];
 
 const SKILL_AGENTS: Record<string, string> = {

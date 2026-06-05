@@ -1,4 +1,7 @@
 import { readFile, mkdir, cp, rm } from "node:fs/promises";
+// NOTE: feature/decision artifacts are edited live on the feature branch.
+// git diff is the staging area; there is no promote/sync step. Archiving only
+// preserves the ephemeral process manifest/tasks — see feedback_dont_reinvent.
 import { join } from "node:path";
 import chalk from "chalk";
 import { findProjectRoot, resolveChangePath } from "../utils/paths.js";
@@ -36,22 +39,6 @@ async function getUserConfirmation(changeId: string): Promise<boolean> {
   return answer.toLowerCase() === "y";
 }
 
-async function syncArtifactsToBaseline(changePath: string, root: string): Promise<void> {
-  try {
-    await cp(join(changePath, "features"), join(root, "features"), { recursive: true, force: true });
-    console.log(`  ${chalk.green("synced")} features to baseline`);
-  } catch {
-    // No proposed features
-  }
-  try {
-    // TODO: handle sequential numbering for new decisions
-    await cp(join(changePath, "decisions"), join(root, ".grimoire", "decisions"), { recursive: true, force: true });
-    console.log(`  ${chalk.green("synced")} decisions to baseline`);
-  } catch {
-    // No proposed decisions
-  }
-}
-
 export async function archiveChange(
   changeId: string,
   options: ArchiveOptions
@@ -73,8 +60,6 @@ export async function archiveChange(
       return;
     }
   }
-
-  await syncArtifactsToBaseline(changePath, root);
 
   const date = new Date().toISOString().split("T")[0];
   const archiveDir = join(root, ".grimoire", "archive", `${date}-${changeId}`);
