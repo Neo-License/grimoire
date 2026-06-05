@@ -502,6 +502,23 @@ Area docs deliberately do **not** list key files or a reusable-code inventory �
 
 `grimoire docs` generates a browsable `.grimoire/docs/OVERVIEW.md` — the single human entry point: what the app is, its actors, capabilities (grouped by functional story), constraints, architecture, and decisions, each linking down.
 
+### Rendering into your doc site
+
+`grimoire docs` emits **portable CommonMark** — grimoire owns the spec *storage* (features, constraints, decisions, schema); your existing doc tool owns *rendering*. Grimoire ships no renderer and standardizes on no doc tool. Include the output wherever your project already publishes:
+
+- **Sphinx** (with [myst-parser](https://myst-parser.readthedocs.io)): point grimoire at your docs tree and include the page in a toctree —
+  ```bash
+  grimoire docs -o docs/overview.md
+  ```
+  ````markdown
+  ```{include} overview.md
+  ```
+  ````
+- **MkDocs**: `grimoire docs -o docs/overview.md`, then add `overview.md` to `nav:`.
+- **No doc tool**: read `.grimoire/docs/OVERVIEW.md` directly — it's plain markdown.
+
+The source artifacts stay tool-agnostic, so the AI workflow doesn't depend on any renderer. Regenerate `OVERVIEW.md` whenever artifacts change (`grimoire-apply` does this at finalize).
+
 ### Pre-Commit Pipeline
 
 ```

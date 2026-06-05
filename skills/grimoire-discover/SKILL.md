@@ -33,7 +33,7 @@ If `codebase-memory-mcp` is not indexed, run `index_repository` first. Only if t
 ## What It Produces
 
 `.grimoire/docs/` with:
-- **`index.yml`** — registry of documented areas with descriptions and directory mappings
+- **`index.yml`** — registry of documented areas (descriptions + directory mappings) and the functional-story map that groups capabilities in the OVERVIEW
 - **Area docs** — one markdown file per significant area, **intent only**:
   - Purpose of the area
   - Boundaries (what belongs here, what doesn't, where related code lives)
@@ -257,9 +257,22 @@ areas:
     path: .grimoire/docs/utils.md
     directory: src/utils
     description: Shared utilities, helpers, formatters
+
+# Functional stories — how capabilities group for a human reader.
+# `grimoire docs` uses this to group the OVERVIEW's Capabilities section.
+# `features` lists feature-file basenames (no .feature extension).
+stories:
+  chat-qa:
+    title: Chat & Q&A
+    features: [ai-chat, a2ui-integration, search]
+  extraction:
+    title: Document extraction
+    features: [document-pipeline, bbd-validation-rules]
 ```
 
 The `directory` field links each doc back to the source directory — it's how a targeted refresh maps a changed directory to the area doc that describes it.
+
+**Generate the `stories:` map.** Walk `features/`, then group the feature files by *functional story* — the user-facing capability area they serve, not the source directory. Propose the grouping to the user and let them rename/merge stories before writing. A feature not yet assigned to a story falls back to its feature-directory group in the OVERVIEW, so partial maps are fine. `stories` is the one place that grouping lives (DRY) — `grimoire docs` reads it, nothing else defines it.
 
 ### Freshness Tracking
 

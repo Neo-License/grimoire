@@ -278,11 +278,12 @@ When all implementation tasks are complete:
 **The verify step is not optional. Do not proceed to finalize with failing tests.**
 
 ### 7. Finalize
-When all tests are green. **Everything was edited live on the branch — finalize moves nothing.** It only flips states and clears the ephemeral scaffolding:
+When all tests are green. Features, decisions, and constraints were edited live on the branch — finalize flips states, applies the schema delta, and clears the ephemeral scaffolding:
 1. Decision records already live in `.grimoire/decisions/` (drafted there, numbered at draft time). Flip MADR status from `proposed` to `accepted` and set the date.
-2. Constraints (`.grimoire/docs/constraints.md`) and data schema (`.grimoire/docs/data/schema.yml`) were edited in place — nothing to move.
-3. Refresh the project overview: run `grimoire docs`. It regenerates `.grimoire/docs/OVERVIEW.md` (the human entry point) from the now-current features, constraints, decisions, and schema — superseded decisions drop out automatically. This is the existing `docs` command, not a new one.
-4. Remove the change directory `.grimoire/changes/<change-id>/`. Its `manifest.md` + `tasks.md` are ephemeral process scaffolding. The durable record is the branch, the PR, and `git log` — linked by the `Change: <change-id>` trailer. **There is no archive tree** (don't reinvent git history).
+2. Constraints (`.grimoire/docs/constraints.md`) were edited in place — nothing to move.
+3. If the change has a `data.yml` (schema delta), apply its `add`/`modify`/`remove` entries to the live `.grimoire/docs/data/schema.yml` so the baseline schema stays current. `data.yml` is a migration-delta spec (ephemeral scaffolding carrying nullability/safety/ordering intent a raw diff wouldn't), not a copy of the schema — `schema.yml` is the live target; the delta is discarded with the change folder.
+4. Refresh the project overview: run `grimoire docs`. It regenerates `.grimoire/docs/OVERVIEW.md` (the human entry point) from the now-current features, constraints, decisions, and schema — superseded decisions drop out automatically. This is the existing `docs` command, not a new one.
+5. Remove the change directory `.grimoire/changes/<change-id>/`. Its `manifest.md` + `tasks.md` (+ any `data.yml`) are ephemeral process scaffolding. The durable record is the branch, the PR, and `git log` — linked by the `Change: <change-id>` trailer. **There is no archive tree** (don't reinvent git history).
 
 ### 8. Commit
 
