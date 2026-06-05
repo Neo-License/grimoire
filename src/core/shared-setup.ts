@@ -12,7 +12,6 @@ export const GRIMOIRE_DIRS = [
   ".grimoire/decisions",
   ".grimoire/docs",
   ".grimoire/changes",
-  ".grimoire/archive",
   ".grimoire/bugs",
   ".grimoire/brand",
   ".grimoire/security/vulns",

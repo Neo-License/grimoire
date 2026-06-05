@@ -88,7 +88,6 @@ describe("initProject", () => {
     expect(mkdirPaths.some((p) => p.includes("features"))).toBe(true);
     expect(mkdirPaths.some((p) => p.includes(".grimoire/decisions"))).toBe(true);
     expect(mkdirPaths.some((p) => p.includes(".grimoire/changes"))).toBe(true);
-    expect(mkdirPaths.some((p) => p.includes(".grimoire/archive"))).toBe(true);
     expect(mkdirPaths.some((p) => p.includes(".grimoire/docs"))).toBe(true);
     expect(mkdirPaths.some((p) => p.includes(".grimoire/brand"))).toBe(true);
   });
