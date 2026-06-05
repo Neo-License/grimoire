@@ -189,7 +189,7 @@ Signals a genuinely new file: new actor type with no existing file, entirely new
 **When design data was provided (step 4.0):**
 - If a Figma snapshot or `grimoire-design` output is available, propose Gherkin scenarios per (component × state) grounded in those artifacts. Walk the component list and the enumerated states; emit one Scenario per pair.
 - Present the proposed scenarios for user review before writing to `.feature` files — accept all / accept some / edit / reject any. Rejected scenarios are not written.
-- If `grimoire-design` already produced user-accepted scenarios under `.grimoire/changes/<change-id>/features/`, do NOT re-propose them; treat them as the baseline and only fill gaps (e.g., new components not yet covered).
+- If `grimoire-design` already produced user-accepted scenarios under `.grimoire/changes/<change-id>/designs/scenarios.feature`, do NOT re-propose them; write the accepted ones live into `features/` (applying the admission test) and only fill gaps (e.g., new components not yet covered).
 
 **Brand-tokens grounding:**
 - When Figma variables map to tokens that also appear in `.grimoire/brand/tokens.json`, scenarios referencing visual properties must use token names, not hex values. Example: write `Then the submit button uses color.primary` not `Then the submit button is #0066ff`.

@@ -38,7 +38,7 @@ Derive implementation tasks from approved Gherkin features and MADR decisions. T
 - "See if there's an existing utility for Z"
 - "TODO: check if this conflicts with…"
 
-Resolve each one yourself before writing the task. Tools: codebase-memory-mcp (`search_graph`, `trace_path`, `get_code_snippet`), `.grimoire/docs/<area>.md` reusable-code tables, `Grep`, neighbor files. The task should state the *answer* ("Reuse `parse_invoice` in `src/billing/parsing.py:42`" or "No existing utility — write new"), never the *question*.
+Resolve each one yourself before writing the task. Tools: codebase-memory-mcp (`search_graph`, `trace_path`, `get_code_snippet`) for symbols and reusable code, `.grimoire/docs/<area>.md` for conventions/boundaries, `Grep`, neighbor files. The task should state the *answer* ("Reuse `parse_invoice` in `src/billing/parsing.py:42`" or "No existing utility — write new"), never the *question*.
 
 **2. Clarify or propose, never assume.** When the spec is ambiguous or silent on something you need to plan:
 
@@ -79,7 +79,7 @@ These are gates, not aspirations — a task that adds a duplicate home or a rein
 - If the decision was **hybrid** (adopt for part, build for part), ensure the boundary between adopted and custom code is clear in the tasks.
 
 **Read from grimoire docs (these replace codebase exploration):**
-- **`.grimoire/docs/<area>.md`** for each area the change touches — these contain: key files with responsibilities, reusable utilities (exact function names, file paths, line numbers), naming conventions, structural patterns, and "Where New Code Goes" guidance. This is the information that lets you write tasks with exact file paths without reading every source file.
+- **`.grimoire/docs/<area>.md`** for each area the change touches — these contain Purpose, Boundaries, Conventions (naming/structure), and "Where New Code Goes" guidance. For key files, exact symbols, reusable utilities (function names, file paths, line numbers), and call graphs, **query the graph** — `search_graph` / `get_code_snippet` / `get_architecture`. Area docs give you intent and placement; the graph gives you the live structure to write exact file paths and reuse existing code.
 - **`.grimoire/docs/data/schema.yml`** — the full data model: every table/collection, field types, relationships, indexes, and external API contracts with `source:` pointers to ORM code. Read this instead of reading individual model files.
 - **`.grimoire/docs/context.yml`** — the project's deployment environment, related services, infrastructure dependencies, CI/CD pipelines, and observability setup. Read this to understand deployment constraints (e.g., Lambda means no long-running processes, Kubernetes means you may need health check endpoints), cross-service boundaries (e.g., auth is handled by a sibling service, not this project), and infrastructure available at runtime (e.g., Redis is available for caching, RabbitMQ for async tasks).
 - Existing duplication in areas you're touching — query codebase-memory-mcp (`search_graph` for similar functions) or run `grimoire health` (its config-driven `duplicates` metric) so tasks consolidate rather than add more clones.
@@ -89,7 +89,7 @@ These are gates, not aspirations — a task that adds a duplicate home or a rein
 
 **Staleness gate:** For each area doc loaded, check its `last_updated` date against `git log -1 --format=%ci <directory>`. If any doc is older than the most recent commit to its directory, it's stale — the file paths, utility names, and patterns it describes may no longer be accurate.
 
-- **Level 1-2:** Warn ("Area doc for `<area>` is behind recent commits — reusable utilities and file paths may be wrong") and proceed. Note inferred paths with `<!-- inferred: area doc may be stale -->`.
+- **Level 1-2:** Warn ("Area doc for `<area>` is behind recent commits — its boundaries/conventions may be wrong; rely on the graph for structure") and proceed. Note inferred paths with `<!-- inferred: area doc may be stale -->`.
 - **Level 3-4:** Treat as a blocker. Do not generate tasks until the user refreshes stale docs via `grimoire-discover` targeted refresh. Planning with stale docs at this complexity produces wrong file paths and misses recent utilities — the cost of re-planning outweighs the cost of refreshing first.
 
 **Read specific source files only when:**
@@ -279,7 +279,7 @@ Follow the rules in `../references/testing-contracts.md`. Key points: mock at HT
 - If a library was rejected for a specific reason (e.g., doesn't support X), add a comment to the relevant task noting this so future developers don't re-evaluate the same option
 
 **Existing code to reuse:**
-- If `.grimoire/docs/` has area docs, check the Reusable Code tables for utilities that apply to this change
+- Query the graph (`search_graph` by concept/name) for existing utilities that apply to this change; area docs give conventions, the graph gives the reusable symbols
 - If `grimoire health`/mcp shows existing clones in the area you're touching, tasks should consolidate rather than add more
 - Add a "Reuse" section at the top of tasks.md listing specific functions/classes to import instead of rewriting
 
